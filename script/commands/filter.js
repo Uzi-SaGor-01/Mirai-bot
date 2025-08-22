@@ -1,9 +1,9 @@
 module.exports.config = {
-  name: "ايدي",
+  name: "Hand",
   version: "1.0.0",
   hasPermssion: 0,
-  credits: "عمر",
-  description: "ايدي أو معرف حسابك عـ الفيس.",
+  credits: "SaGor",
+  description: "My ID or your Facebook account.,
   commandCategory: "خدمات",
   cooldowns: 5
 };
