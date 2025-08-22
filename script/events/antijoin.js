@@ -1,5 +1,5 @@
 module.exports.config = {
- name: "عدم_الدخول",
+ name: "antijoin",
  eventType: ["log:subscribe"],
  version: "1.0.0",
  credits: "scorpion",
@@ -20,6 +20,6 @@ module.exports.run = async function ({ event, api, Threads, Users }) {
                               global.data.threadData.set(event.threadID, data);
                     })
 			}
- 	return api.sendMessage(`وضع ضد-الاضافة قيد التشغيل يرجى ايقاف تشغيله واعادة المحاولة `, event.threadID);
+ 	return api.sendMessage(`Anti-add-on mode is on, please turn it off and try again. `, event.threadID);
  }
                                 }
