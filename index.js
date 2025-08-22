@@ -1,67 +1,58 @@
 const { spawn } = require("child_process");
-const { readFileSync } = require("fs-extra");
 const http = require("http");
 const axios = require("axios");
-const semver = require("semver");
 const logger = require("./utils/log");
 
-/////////////////////////////////////////////
-//========= Check node.js version =========//
-/////////////////////////////////////////////
+// Safety Lock
+if (global.botAlreadyRunning) {
+  console.log("Bot already running. Exiting...");
+  process.exit(0);
+}
+global.botAlreadyRunning = true;
+global.countRestart = 0;
 
-// const nodeVersion = semver.parse(process.version);
-// if (nodeVersion.major < 13) {
-//     logger(`Your Node.js ${process.version} is not supported, it required Node.js 13 to run bot!`, "error");
-//     return process.exit(0);
-// };
-
-///////////////////////////////////////////////////////////
-//========= Create website for dashboard/uptime =========//
-///////////////////////////////////////////////////////////
-
-const dashboard = http.createServer(function (_req, res) {
-    res.writeHead(200, "OK", { "Content-Type": "text/plain" });
-    res.write(" SAGOR BOT CONNECTED TO FACEBOOK SUCCESSFULLY");
-    res.end();
+// Dashboard server for uptime
+const dashboard = http.createServer((req, res) => {
+  res.writeHead(200, { "Content-Type": "text/plain" });
+  res.end("SAGOR BOT CONNECTED TO FACEBOOK SUCCESSFULLY");
 });
 
-dashboard.listen(process.env.port || 0);
+const PORT = process.env.PORT || 3000;
+dashboard.listen(PORT, () => logger(`Dashboard running on port ${PORT}`, "[ Starting ]"));
 
-logger("Opened server site...", "[ Starting ]");
-
-/////////////////////////////////////////////////////////
-//========= Create start bot and make it loop =========//
-/////////////////////////////////////////////////////////
-
+// Start bot function
 function startBot(message) {
-    (message) ? logger(message, "[ Starting ]") : "";
+  if (message) logger(message, "[ Starting ]");
 
-    const child = spawn("node", ["--trace-warnings", "--async-stack-traces", "Sagor.js"], {
-        cwd: __dirname,
-        stdio: "inherit",
-        shell: true
-    });
+  const child = spawn("node", ["--trace-warnings", "--async-stack-traces", "Sagor.js"], {
+    cwd: __dirname,
+    stdio: "inherit",
+    shell: true
+  });
 
-    child.on("close", (codeExit) => {
-        if (codeExit != 0 || global.countRestart && global.countRestart < 5) {
-            startBot("Restarting...");
-            global.countRestart += 1;
-            return;
-        } else return;
-    });
+  child.on("close", (codeExit) => {
+    // Auto restart if crashed
+    if ((codeExit !== 0 || global.countRestart < 5) && global.countRestart < 5) {
+      global.countRestart += 1;
+      startBot("Restarting...");
+    }
+  });
 
-    child.on("error", function (error) {
-        logger("An error occurred: " + JSON.stringify(error), "[ Starting ]");
-    });
-};
-////////////////////////////////////////////////
-//========= Check update from Github =========//
-////////////////////////////////////////////////
+  child.on("error", (error) => {
+    logger("An error occurred: " + JSON.stringify(error), "[ Starting ]");
+  });
+}
 
+// Check updates from Github
+axios.get("https://raw.githubusercontent.com/Uzi-SaGor-01/sagor-x-mirai/main/package.json")
+  .then((res) => {
+    logger(res.data.name, "[ NAME ]");
+    logger("Version: " + res.data.version, "[ VERSION ]");
+    logger(res.data.description, "[ DESCRIPTION ]");
+  })
+  .catch((err) => {
+    logger("Failed to fetch GitHub update info: " + err.message, "[ ERROR ]");
+  });
 
-axios.get("https://raw.githubusercontent.com/Uzi-SaGor-01/sagor-x-mirai/main/package.json").then((res) => {
-    logger(res['data']['name'], "[ NAME ]");
-    logger("Version: " + res['data']['version'], "[ VERSION ]");
-    logger(res['data']['description'], "[ DESCRIPTION ]");
-});
+// Start bot
 startBot();
