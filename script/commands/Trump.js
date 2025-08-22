@@ -1,18 +1,16 @@
 module.exports.config = {
-
-	name: "ترمب",
-
+	name: "trump",
 	version: "1.0.1",
 	hasPermssion: 0,
-	credits: "عمر",
-	description: "الكتابة على منضور مزيف لترامب",
-	commandCategory: "صور",
-	usages: "ترمب [نص]",
+	credits: "SaGor",
+	description: "Write text on a fake Trump image",
+	commandCategory: "images",
+	usages: "trump [text]",
 	cooldowns: 10,
 	dependencies: {
 		"canvas":"",
-		 "axios":"",
-		 "fs-extra":""
+		"axios":"",
+		"fs-extra":""
 	}
 };
 
@@ -52,9 +50,11 @@ module.exports.run = async function({ api, event, args }) {
 	const axios = global.nodemodule["axios"];
 	let pathImg = __dirname + '/cache/trump.png';
 	var text = args.join(" ");
-	if (!text) return api.sendMessage("قم بكتابة شيء ما لأدخالة ألى الصورة", threadID, messageID);
-	let getPorn = (await axios.get(`https://nekobot.xyz/imagegen/b/2/5/5257c8eb517552857cc5e809ff0fb.png`, { responseType: 'arraybuffer' })).data;
-	fs.writeFileSync(pathImg, Buffer.from(getPorn, 'utf-8'));
+	if (!text) return api.sendMessage("Please write something to put on the image", threadID, messageID);
+
+	let getImage = (await axios.get(`https://nekobot.xyz/imagegen/b/2/5/5257c8eb517552857cc5e809ff0fb.png`, { responseType: 'arraybuffer' })).data;
+	fs.writeFileSync(pathImg, Buffer.from(getImage, 'utf-8'));
+
 	let baseImage = await loadImage(pathImg);
 	let canvas = createCanvas(baseImage.width, baseImage.height);
 	let ctx = canvas.getContext("2d");
@@ -68,9 +68,11 @@ module.exports.run = async function({ api, event, args }) {
 		ctx.font = `400 ${fontSize}px Arial, sans-serif`;
 	}
 	const lines = await this.wrapText(ctx, text, 1160);
-	ctx.fillText(lines.join('\n'), 60,165);//comment
+	ctx.fillText(lines.join('\n'), 60,165); // comment
 	ctx.beginPath();
+
 	const imageBuffer = canvas.toBuffer();
 	fs.writeFileSync(pathImg, imageBuffer);
-return api.sendMessage({ attachment: fs.createReadStream(pathImg) }, threadID, () => fs.unlinkSync(pathImg), messageID);        
+
+	return api.sendMessage({ attachment: fs.createReadStream(pathImg) }, threadID, () => fs.unlinkSync(pathImg), messageID);        
 }
