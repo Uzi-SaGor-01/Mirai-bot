@@ -3,7 +3,7 @@ module.exports.config = {
   version: "1.0.0",
   hasPermssion: 0,
   credits: "SaGor",
-  description: "My ID or your Facebook account.,
+  description: "My ID or your Facebook account.",
   commandCategory: "خدمات",
   cooldowns: 5
 };
