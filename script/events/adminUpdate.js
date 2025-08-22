@@ -47,7 +47,7 @@ module.exports.run = async function ({ event, api, Threads,Users }) {
             case "log:thread-icon": {
             	let preIcon = JSON.parse(fs.readFileSync(iconPath));
             	dataThread.threadIcon = event.logMessageData.thread_icon || "👍";
-                if (global.configModule[this.config.name].sendNoti) api.sendMessage(`» تم تغيير أيقونة المجموعة ألى : ${preIcon[threadID] || "unknown"}`, threadID, async (error, info) => {
+                if (global.configModule[this.config.name].sendNoti) api.sendMessage(`» The group icon has been changed to: ${preIcon[threadID] || "unknown"}`, threadID, async (error, info) => {
                 	preIcon[threadID] = dataThread.threadIcon;
                 	fs.writeFileSync(iconPath, JSON.stringify(preIcon));
                     if (global.configModule[this.config.name].autoUnsend) {
@@ -82,7 +82,7 @@ module.exports.run = async function ({ event, api, Threads,Users }) {
 
             case "log:thread-name": {
                 dataThread.threadName = event.logMessageData.name || "No name";
-                if (global.configModule[this.config.name].sendNoti) api.sendMessage(`»» اشعار ««\n تم تغيير أسم المجموعة ألى : ${dataThread.threadName}`, threadID, async (error, info) => {
+                if (global.configModule[this.config.name].sendNoti) api.sendMessage(`»» notice ««\n The group name has been changed to : ${dataThread.threadName}`, threadID, async (error, info) => {
                     if (global.configModule[this.config.name].autoUnsend) {
                         await new Promise(resolve => setTimeout(resolve, global.configModule[this.config.name].timeToUnsend * 1000));
                         return api.unsendMessage(info.messageID);
