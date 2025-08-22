@@ -2,7 +2,7 @@ module.exports.config = {
   name: "leave",
   eventType: ["log:unsubscribe"],
   version: "1.0.0",
-  credits: "S H A D O W",
+  credits: "SAGOR",
   description: "Notify bots or leavers",
   dependencies: {
     "fs-extra": "",
@@ -17,14 +17,14 @@ module.exports.run = async function({ api, event, Users, Threads }) {
   const { threadID } = event;
   const data = global.data.threadData.get(parseInt(threadID)) || (await Threads.getData(threadID)).data;
   const name = global.data.userName.get(event.logMessageData.leftParticipantFbId) || await Users.getNameUser(event.logMessageData.leftParticipantFbId);
-  const type = (event.author == event.logMessageData.leftParticipantFbId) ? "خرج تحوا هههه 🤧🖤" : "خرج تحوا  ترجع نصيفط لك محمد يحويك 🤭💞";
+  const type = (event.author == event.logMessageData.leftParticipantFbId) ? "He went out, lol 🤧🖤" : "I went out to you, and I will come back to you, Muhammad will hug you 🤭💞";
   const path = join(__dirname, "cache", "leaveGif");
   const gifPath = join(path, `sad.gif`);
   var msg, formPush
 
   if (existsSync(path)) mkdirSync(path, { recursive: true });
 
-  (typeof data.customLeave == "undefined") ? msg = "الاسم : {name}\n السبب: {type}." : msg = data.customLeave;
+  (typeof data.customLeave == "undefined") ? msg = "the name : {name}\n the reason: {type}." : msg = data.customLeave;
   msg = msg.replace(/\{name}/g, name).replace(/\{type}/g, type);
 
   if (existsSync(gifPath)) formPush = { body: msg, attachment: createReadStream(gifPath) }
