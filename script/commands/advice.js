@@ -1,8 +1,8 @@
 module.exports.config = {
-	name: "نصيحة",
+	name: "advice",
 	version: "1.0.1",
 	hasPermssion: 0,
-	credits: "عمر",
+	credits: "SaGor",
 	description: "أعطيك نصيحة واحدة بشكل عشوائي",
 	commandCategory: "ترفية",
 	usages: " ",
@@ -17,7 +17,7 @@ module.exports.run = async ({ event, api, args }) => {
   const Data = (await srod.GetAdvice()).embed.description;
   
   return request(encodeURI(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=ar&dt=t&q=${Data}`), (err, response, body) => {
-		if (err) return api.sendMessage("حدث خطاء!", event.threadID, event.messageID);
+		if (err) return api.sendMessage("An error occurred.!", event.threadID, event.messageID);
 		var retrieve = JSON.parse(body);
 		var text = '';
 		retrieve[0].forEach(item => (item[0]) ? text += item[0] : '');
