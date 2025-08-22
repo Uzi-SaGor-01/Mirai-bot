@@ -1,15 +1,16 @@
 const allou_server = "https://games.proarcoder.repl.co/QSR";
 const axios = require('axios');
-const commandName = "مغامره";
+const commandName = "adventure";
+
 module.exports = {
   config: {
-    name: "مغامره",
+    name: "adventure",
     version: "1.0",
-    credits: "لوفي وريان تشان",
+    credits: "SaGor",
     cooldowns: 5,
     hasPermission: 0,
-    description: "مغامرة في منزل العائلة آدمز",
-    commandCategory: "العاب",
+    description: "Adventure in the Addams Family house",
+    commandCategory: "games",
     usePrefix: true
   },
 
@@ -34,7 +35,7 @@ module.exports = {
   handleReply: async function({ api, event, handleReply }) {
     const { messageID, author } = handleReply;
     const uid = event.senderID;
-    if (uid != author) return api.sendMessage('أنت لست لاعب القصة', event.threadID);
+    if (uid != author) return api.sendMessage('You are not the story player', event.threadID);
     const ans = { "1": "A", "2": "B", "3": "C" };
     const answer = ans[event.body];
     const res = await axios.get(allou_server, {
@@ -47,7 +48,7 @@ module.exports = {
     return api.sendMessage({ body: res.data.message }, event.threadID, (error, info) => {
       if (!error) {
         global.client.handleReply.push({
-          name: commandName, // Use a different name here
+          name: commandName,
           author: event.senderID,
           messageID: info.messageID
         });
