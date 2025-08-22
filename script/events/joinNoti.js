@@ -12,14 +12,14 @@ module.exports.config = {
 module.exports.run = async function({ api, event, Users, Threads }) {
    var fullYear = global.client.getTime("fullYear");
   	var getHours = await global.client.getTime("hours");
-			var session = `${getHours < 3 ? "بعد منتصف الليل" : getHours < 8 ? "الصباح الباكر" : getHours < 11 ? "وقت الظهيرة" : getHours < 16 ? "قبل الظهر" : getHours < 23 ? "الليل" : "منتصف الليل"}`
+			var session = `${getHours < 3 ? "After midnight" : getHours < 8 ? "early morning" : getHours < 11 ? "noon" : getHours < 16 ? "before noon" : getHours < 23 ? "the night" : "midnight"}`
     const { join } = global.nodemodule["path"];
     const { threadID } = event;
   const { PREFIX } = global.config;
     console.log(2)
     if (event.logMessageData.addedParticipants.some(i => i.userFbId == api.getCurrentUserID())) {
         console.log(1)
-        return api.sendMessage("⌯ تم التفعيل بنجاح", threadID, async () => {
+        return api.sendMessage("⌯ Activation successful", threadID, async () => {
             let check = true;
             while (check) {
                 setTimeout(() => check = false, 30 * 1000);
@@ -35,16 +35,16 @@ module.exports.run = async function({ api, event, Users, Threads }) {
                     });
                 }
             }
-            api.changeNickname(`[ . ] • ${(!global.config.BOTNAME) ? "Made By محمد " : global.config.BOTNAME}`, threadID, api.getCurrentUserID());
-          	api.sendMessage(`نجح الاتصال 👀💞
+            api.changeNickname(`[ . ] • ${(!global.config.BOTNAME) ? "Made By SaGor" : global.config.BOTNAME}`, threadID, api.getCurrentUserID());
+          	api.sendMessage(`The call was successful. 👀💞
 
-مرحبا بك في عالمي الخاص
+Welcome to my private world.
 
-استخدم .الاوامر لرؤيه الاوامر
+Use .commands to view the commands.
 
-ممنوع السبام واحداث المشاكل
+Spamming and causing trouble are prohibited.
 
-في حاله حظر مجموعتك راسل المطور 
+If your group is banned, contact the developer. 
 `, threadID);
 		}); 
 	}
@@ -73,7 +73,7 @@ module.exports.run = async function({ api, event, Users, Threads }) {
 			}
 			memLength.sort((a, b) => a - b);
 			
-			(typeof threadData.customJoin == "undefined") ? msg = " {name} :مرحبا\n في جحيم   {threadName} \n{type} هاهاها" : msg = threadData.customJoin;
+			(typeof threadData.customJoin == "undefined") ? msg = " {name} :Welcome to Hell   {threadName} \n{type} هاهاها" : msg = threadData.customJoin;
 			msg = msg
 			.replace(/\{name}/g, nameArray.join(', '))
 			.replace(/\{type}/g, (memLength.length > 1) ?  'các bạn' : '')
