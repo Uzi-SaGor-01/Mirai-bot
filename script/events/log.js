@@ -30,23 +30,23 @@ module.exports.run = async function ({ api, event, Users, Threads }) {
 
   //console.log(nameThread)
 
-  var formReport = " اشعار {task} البوت " +
-    "\n\nالمجموعه: " + nameThread +
-    "\n\nايدي الكروب: " + event.threadID +
+  var formReport = " notice {task} The bot " +
+    "\n\nThe group: " + nameThread +
+    "\n\nMy hands are balls: " + event.threadID +
     " " +
-    "\nالمستخدم: " + nameUser +
-    "\nايدي المستخدم: " + event.author +
-    "\n\nالوقت " + time + "",
+    "\nuser: " + nameUser +
+    "\nUser's hands: " + event.author +
+    "\n\nthe time " + time + "",
     task = "";
   switch (event.logMessageType) {
     case "log:thread-name": {
-        newName = event.logMessageData.name || "الاسم غير موجود";
+        newName = event.logMessageData.name || "Name not found";
         //task = "Người dùng thay đổi tên nhóm thành " + newName + "";
         await Threads.setData(event.threadID, {name: newName});
         break;
     }
     case "log:subscribe": {
-      if (event.logMessageData.addedParticipants.some(i => i.userFbId == botID)) task = "بأضافة";
+      if (event.logMessageData.addedParticipants.some(i => i.userFbId == botID)) task = "In addition";
       break;
     }
     case "log:unsubscribe": {
@@ -54,13 +54,13 @@ module.exports.run = async function ({ api, event, Users, Threads }) {
         if(event.senderID == botID) return;
         const data = (await Threads.getData(event.threadID)).data || {};
         data.banned = true;
-        var reason = "🚫 تم حضر هذه المجموعة بسبب طرد البوت";
+        var reason = "🚫 This group has been banned due to the bot being kicked out.";
         data.reason = reason || null;
         data.dateAdded = time;
         await Threads.setData(event.threadID, { data });
         global.data.threadBanned.set(event.threadID, { reason: data.reason, dateAdded: data.dateAdded });
 
-        task = "بطرد"
+        task = "By expelling"
       }
       break;
     }
